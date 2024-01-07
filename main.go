@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	supa "github.com/nedpals/supabase-go"
@@ -70,10 +71,17 @@ func main() {
 }
 
 func getBooksHandler(c *gin.Context) {
+
+	searchTerm := c.Query("search")
+
 	books, err := getBooks()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to fetch books"})
 		return
+	}
+
+	if searchTerm != "" {
+		books = filterBooks(books, searchTerm)
 	}
 
 	//c.JSON(http.StatusOK, books)
@@ -124,4 +132,16 @@ func postBooksHandler(c *gin.Context) {
 
 	// Return the updated list of books to the client
 	c.HTML(http.StatusOK, "index.html", gin.H{"books": books})
+}
+
+func filterBooks(books []Books, searchTerm string) []Books {
+	var results []Books
+
+	for _, book := range books {
+		if strings.Contains(strings.ToLower(book.Title), strings.ToLower(searchTerm)) || strings.Contains(strings.ToLower(book.Author), strings.ToLower(searchTerm)) {
+			results = append(results, book)
+		}
+	}
+
+	return results
 }
