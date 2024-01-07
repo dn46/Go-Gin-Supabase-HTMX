@@ -1,0 +1,18 @@
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .books}}
+        <tr>
+            <td>{{.Title}}</td>
+            <td>{{.Author}}</td>
+            <td>{{.Price}}</td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>

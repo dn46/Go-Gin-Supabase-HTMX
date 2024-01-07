@@ -6,8 +6,8 @@
     <title>Go+Gin+HTMX+Supabase</title>
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 </head>
-<body>
-    <form hx-post="/books" hx-trigger="submit">
+<body hx-swap="outerHTML">
+    <form hx-post="/books" hx-trigger="submit" hx-swap="outerHTML">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title"><br>
         <label for="author">Author:</label><br>
@@ -16,5 +16,9 @@
         <input type="number" id="price" name="price"><br>
         <input type="submit" value="Submit">
     </form>
+
+    <div id="book-list" hx-get="/books" hx-trigger="revealed">
+
+    </div>
 </body>
 </html>

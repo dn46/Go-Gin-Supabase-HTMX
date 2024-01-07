@@ -53,25 +53,6 @@ func main() {
 		log.Fatal("Unable to connect to Supabase")
 	}
 
-	// getBooks()
-
-	// row := Books{
-	// 	ID:     2,
-	// 	Title:  "The Lord of the Rings",
-	// 	Author: "J.R.R. Tolkien",
-	// 	Price:  9.99,
-	// }
-
-	// var results []Books
-
-	// err := supabase.DB.From("Books").Insert(row).Execute(&results)
-
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println(results)
-
 	// handler for the endpoint path; the getBooks function handles requests to the /books endpoint path
 	router := gin.Default()
 	router.LoadHTMLGlob("*.html")
@@ -95,7 +76,8 @@ func getBooksHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, books)
+	//c.JSON(http.StatusOK, books)
+	c.HTML(http.StatusOK, "books.html", gin.H{"books": books})
 }
 
 func getBooks() ([]Books, error) {
@@ -133,5 +115,13 @@ func postBooksHandler(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(http.StatusCreated, newBook)
+	// Fetch the updated list of books after a new book is inserted
+	books, err := getBooks()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to fetch books"})
+		return
+	}
+
+	// Return the updated list of books to the client
+	c.HTML(http.StatusOK, "index.html", gin.H{"books": books})
 }
