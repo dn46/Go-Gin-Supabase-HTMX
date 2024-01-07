@@ -9,10 +9,10 @@ import (
 )
 
 type Books struct {
-	ID     int8    `json:"id"`
-	Title  string  `json:"title"`
-	Author string  `json:"author"`
-	Price  float64 `json:"price"`
+	//ID     int8    `json:"id"`
+	Title  string  `form:"title"`
+	Author string  `form:"author"`
+	Price  float64 `form:"price"`
 }
 
 var (
@@ -74,8 +74,14 @@ func main() {
 
 	// handler for the endpoint path; the getBooks function handles requests to the /books endpoint path
 	router := gin.Default()
+	router.LoadHTMLGlob("*.html")
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+
 	router.GET("/books", getBooksHandler)
-	// router.POST("/books", postBooks)
+	router.POST("/books", postBooksHandler)
 	// router.GET("/books/:id", getBookByID)
 
 	router.Run("localhost:8080")
@@ -101,4 +107,31 @@ func getBooks() ([]Books, error) {
 	}
 
 	return results, nil
+}
+
+func insertBook(book Books) error {
+	var results []Books
+	err := supabaseClient.DB.From("Books").Insert(book).Execute(&results)
+	if err != nil {
+		log.Fatal("error inserting", err)
+	}
+
+	return nil
+}
+
+func postBooksHandler(c *gin.Context) {
+	var newBook Books
+
+	if error := c.ShouldBind(&newBook); error != nil {
+		return
+	}
+
+	err := insertBook(newBook)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to insert book"})
+		return
+	}
+
+	c.IndentedJSON(http.StatusCreated, newBook)
 }
