@@ -2,23 +2,24 @@
 <html>
 <head>
     <title>Create a New Book</title>
-    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 </head>
 <body>
     {{template "navbar"}}
 
     <h1>Create a New Book</h1>
 
-    <form hx-post="/books" hx-trigger="submit" hx-target="#message" hx-swap="innerHTML">
+    <form hx-post="/books" hx-trigger="submit" hx-swap="none">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title"><br>
         <label for="author">Author:</label><br>
         <input type="text" id="author" name="author"><br>
         <label for="price">Price:</label><br>
         <input type="text" id="price" name="price"><br>
+        <label for="isbn">ISBN:</label><br>
+        <input type="text" id="isbn" name="isbn"><br>
         <input type="submit" value="Create Book">
     </form>
 
-    <div id="message"></div>
 </body>
 </html>

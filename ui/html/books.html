@@ -1,4 +1,6 @@
+<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 <table>
+
     <thead>
         <tr>
             <th>Title</th>
@@ -12,6 +14,8 @@
             <td>{{.Title}}</td>
             <td>{{.Author}}</td>
             <td>{{.Price}}</td>
+            <td><button>edit</button></td>
+            <td><button hx-post="/delete/{{.ISBN}}" hx-confirm="Are you sure you want to delete this book?" hx-swap="none">delete</button></td>
         </tr>
         {{end}}
     </tbody>

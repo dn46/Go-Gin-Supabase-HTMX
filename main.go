@@ -12,9 +12,11 @@ import (
 )
 
 type Books struct {
+	// ID     int8    `form:"id"`
 	Title  string  `form:"title"`
 	Author string  `form:"author"`
 	Price  float64 `form:"price"`
+	ISBN   string  `form:"isbn"` // DELETE BY THIS INSTEAD; MUST CREATE FIELD FOR IT IN CREATE AND SUPABASE
 }
 
 var (
@@ -60,6 +62,20 @@ func main() {
 		c.HTML(http.StatusOK, "list.html", gin.H{
 			"title": "List of books",
 		})
+	})
+
+	router.POST("/delete/:isbn", func(c *gin.Context) {
+		isbn := c.Param("isbn")
+
+		var results []Books
+
+		err := supabaseClient.DB.From("Books").Delete().Eq("ISBN", isbn).Execute(&results)
+
+		if err != nil {
+			log.Fatal("error deleting", err)
+		}
+
+		c.Redirect(http.StatusMovedPermanently, "/list")
 	})
 
 	//router.GET("/create", createBookHandler)
@@ -147,8 +163,4 @@ func filterBooks(books []Books, searchTerm string) []Books {
 	}
 
 	return results
-}
-
-func createBookHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "create.html", nil)
 }

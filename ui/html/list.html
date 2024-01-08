@@ -12,5 +12,9 @@
     <div id="book-list" hx-get="/books" hx-trigger="load, swapped">
         
     </div>
+
+    <button hx-get="/books" hx-trigger="click" hx-target="#book-list" hx-swap="innerHTML">Refresh Book List</button>
+
+    <input type="search" name="search" placeholder="Begin Typing To Search Users..." hx-get="/books" hx-trigger="input changed" hx-target="#book-list">
 </body>
 </html>
