@@ -5,6 +5,8 @@
     <script src="https://unpkg.com/htmx.org"></script>
 </head>
 <body>
+    {{template "navbar"}}
+
     <h1>Create a New Book</h1>
 
     <form hx-post="/books" hx-trigger="submit" hx-target="#message" hx-swap="innerHTML">

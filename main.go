@@ -45,10 +45,24 @@ func main() {
 	router.LoadHTMLGlob("ui/html/*.html")
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"title": "Books",
+		})
 	})
 
-	router.GET("/create", createBookHandler)
+	router.GET("/create", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "create.html", gin.H{
+			"title": "Create a new book",
+		})
+	})
+
+	router.GET("/list", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "list.html", gin.H{
+			"title": "List of books",
+		})
+	})
+
+	//router.GET("/create", createBookHandler)
 
 	router.GET("/books", getBooksHandler)
 	router.POST("/books", postBooksHandler)
