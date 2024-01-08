@@ -64,6 +64,12 @@ func main() {
 		})
 	})
 
+	// router.GET("/edit", func(c *gin.Context) {
+	// 	c.HTML(http.StatusOK, "edit.html", gin.H{
+	// 		"title": "Edit book",
+	// 	})
+	// })
+
 	router.POST("/delete/:isbn", func(c *gin.Context) {
 		isbn := c.Param("isbn")
 
@@ -78,8 +84,25 @@ func main() {
 		c.Redirect(http.StatusMovedPermanently, "/list")
 	})
 
-	//router.GET("/create", createBookHandler)
+	router.GET("/edit/:isbn", func(c *gin.Context) {
+		isbn := c.Param("isbn")
 
+		var results []Books
+
+		err := supabaseClient.DB.From("Books").Select("*").Eq("ISBN", isbn).Execute(&results)
+
+		if err != nil {
+			log.Fatal("error editing", err)
+		}
+
+		c.HTML(http.StatusOK, "edit.html", gin.H{
+			"title": "Edit book",
+			"book":  results[0],
+		})
+	})
+
+	//router.GET("/create", createBookHandler)
+	router.POST("/update/:isbn", updateBookHandler)
 	router.GET("/books", getBooksHandler)
 	router.POST("/books", postBooksHandler)
 	// router.GET("/books/:id", getBookByID)
@@ -163,4 +186,32 @@ func filterBooks(books []Books, searchTerm string) []Books {
 	}
 
 	return results
+}
+
+func updateBook(isbn string, book Books) error {
+	var results []Books
+	err := supabaseClient.DB.From("Books").Update(book).Eq("ISBN", isbn).Execute(&results)
+	if err != nil {
+		log.Fatal("error updating", err)
+	}
+
+	return nil
+}
+
+func updateBookHandler(c *gin.Context) {
+	isbn := c.Param("isbn")
+
+	var newBook Books
+	if error := c.ShouldBind(&newBook); error != nil {
+		return
+	}
+
+	err := updateBook(isbn, newBook)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to update book"})
+		return
+	}
+
+	// Return the updated list of books to the client
+	c.Redirect(http.StatusMovedPermanently, "/list")
 }
