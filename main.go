@@ -82,6 +82,7 @@ func main() {
 		}
 
 		c.Redirect(http.StatusMovedPermanently, "/list")
+		c.HTML(http.StatusOK, "index.html", gin.H{"message": "Book deleted successfully"})
 	})
 
 	router.GET("/edit/:isbn", func(c *gin.Context) {

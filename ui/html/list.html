@@ -9,6 +9,8 @@
 <body>
     {{template "navbar"}}
 
+    <div id="notification" hx-target="this" hx-swap="outerHTML">{{.message}}</div>
+
     <div id="book-list" hx-get="/books" hx-trigger="load, swapped">
         
     </div>
