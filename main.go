@@ -16,7 +16,7 @@ type Books struct {
 	Title  string  `form:"title"`
 	Author string  `form:"author"`
 	Price  float64 `form:"price"`
-	ISBN   string  `form:"isbn"` // DELETE BY THIS INSTEAD; MUST CREATE FIELD FOR IT IN CREATE AND SUPABASE
+	ISBN   string  `form:"isbn"`
 }
 
 var (
@@ -54,7 +54,8 @@ func main() {
 
 	router.GET("/create", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "create.html", gin.H{
-			"title": "Create a new book",
+			"title":   "Create a new book",
+			"message": "Book created successfully",
 		})
 	})
 
@@ -64,11 +65,11 @@ func main() {
 		})
 	})
 
-	// router.GET("/edit", func(c *gin.Context) {
-	// 	c.HTML(http.StatusOK, "edit.html", gin.H{
-	// 		"title": "Edit book",
-	// 	})
-	// })
+	router.GET("/registerUser", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "registerUser.html", gin.H{
+			"title": "Register a new user",
+		})
+	})
 
 	router.POST("/delete/:isbn", func(c *gin.Context) {
 		isbn := c.Param("isbn")
@@ -106,7 +107,7 @@ func main() {
 	router.POST("/update/:isbn", updateBookHandler)
 	router.GET("/books", getBooksHandler)
 	router.POST("/books", postBooksHandler)
-	// router.GET("/books/:id", getBookByID)
+	router.POST("/register", registerUserHandler)
 
 	router.Run("localhost:8080")
 
